@@ -134,18 +134,6 @@ namespace VirtualPianoPlayer
 				// true where the action is a directive and the directive type is SET
 				return (action.GetType() == typeof(DirectiveLine) && ((DirectiveLine)action).Type == DirectiveType.SET);
 			});
-
-			// iterate through each of the directives and set variables, and expand variables
-			for (int i = 0; i < Actions.Count; i++)
-			{
-				
-
-				// skip if it isn't a directive
-				if (Actions[i].GetType() != typeof(DirectiveLine))
-					continue;
-
-				var line = (DirectiveLine)Actions[i];
-			}
 		}
 	}
 }
