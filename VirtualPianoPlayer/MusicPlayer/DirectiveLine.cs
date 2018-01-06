@@ -9,7 +9,7 @@ namespace VirtualPianoPlayer.MusicPlayer
 	/// <summary>
 	/// Represents a single directive
 	/// </summary>
-	public struct DirectiveLine
+	public class DirectiveLine : Line
 	{
 		public DirectiveType Type { get; set; }
 		public string[] Arguments { get; set; }
@@ -18,6 +18,11 @@ namespace VirtualPianoPlayer.MusicPlayer
 		/// The line number of the line
 		/// </summary>
 		public int Line { get; set; }
+
+		public override string ToString()
+		{
+			return $"{Line.ToString("D3")}: {Type.ToString()} {string.Join(" ", Arguments)}";
+		}
 	}
 
 	/// <summary>

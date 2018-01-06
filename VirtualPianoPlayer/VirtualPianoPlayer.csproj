@@ -53,6 +53,7 @@
     </Compile>
     <Compile Include="MusicFile.cs" />
     <Compile Include="MusicPlayer\DirectiveLine.cs" />
+    <Compile Include="MusicPlayer\Line.cs" />
     <Compile Include="MusicPlayer\MusicLine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

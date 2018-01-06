@@ -24,6 +24,9 @@ namespace VirtualPianoPlayer
 		/// </summary>
 		public List<object> Actions { get; private set; } = new List<object>();
 
+		/// <summary>
+		/// The variables defined by the script
+		/// </summary>
 		public Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
 
 		public MusicFile(string filePath)
@@ -134,6 +137,8 @@ namespace VirtualPianoPlayer
 				// true where the action is a directive and the directive type is SET
 				return (action.GetType() == typeof(DirectiveLine) && ((DirectiveLine)action).Type == DirectiveType.SET);
 			});
+
+			// TODO: expand GOTOs
 		}
 	}
 }

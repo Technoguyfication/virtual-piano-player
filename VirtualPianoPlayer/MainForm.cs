@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using VirtualPianoPlayer.MusicPlayer;
 
 namespace VirtualPianoPlayer
 {
@@ -36,6 +37,14 @@ namespace VirtualPianoPlayer
 			}
 
 			MessageBox.Show($"Opened {filePath}\nParsed {_currentFile.Actions.Count} total actions, {_currentFile.Variables.Count} variables");
+
+			// display "compiled" code
+			var builder = new StringBuilder();
+			foreach (Line action in _currentFile.Actions)
+			{
+				builder.AppendLine(action.ToString());
+			}
+			testTextBox.Text = builder.ToString();
 		}
 
 		private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
