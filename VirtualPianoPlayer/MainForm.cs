@@ -36,8 +36,6 @@ namespace VirtualPianoPlayer
 				return;
 			}
 
-			MessageBox.Show($"Opened {filePath}\nParsed {_currentFile.Actions.Count} total actions, {_currentFile.Variables.Count} variables, and {_currentFile.Tags.Count} tags");
-
 			// display "compiled" code
 			var builder = new StringBuilder();
 			foreach (Line action in _currentFile.Actions)
@@ -45,6 +43,8 @@ namespace VirtualPianoPlayer
 				builder.AppendLine(action.ToString());
 			}
 			testTextBox.Text = builder.ToString();
+
+			MessageBox.Show($"Opened {filePath}\nParsed {_currentFile.Actions.Count} total actions, {_currentFile.Variables.Count} variables, and {_currentFile.Tags.Count} tags");
 		}
 
 		private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
