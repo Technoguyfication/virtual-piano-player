@@ -55,7 +55,7 @@
 			// openToolStripMenuItem
 			// 
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
 			this.openToolStripMenuItem.Text = "&Open";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
 			// 
@@ -64,9 +64,11 @@
 			this.testTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.testTextBox.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.testTextBox.Location = new System.Drawing.Point(12, 27);
 			this.testTextBox.Multiline = true;
 			this.testTextBox.Name = "testTextBox";
+			this.testTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.testTextBox.Size = new System.Drawing.Size(511, 250);
 			this.testTextBox.TabIndex = 1;
 			// 
