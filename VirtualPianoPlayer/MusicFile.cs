@@ -101,11 +101,11 @@ namespace VirtualPianoPlayer
 					// split into args
 					string[] args = lines[i].Substring(1).Split(' ');
 					if (args.Length < 1)
-						throw new ParseErrorException($"Expected directive after \",\" @ {FilePath} line {i + 1}");
+						throw new ParseErrorException($"Expected directive after \",\" @ line {i + 1}");
 
 					// get directive type
 					if (!Enum.TryParse(args[0].ToUpper(), out DirectiveType directiveType))
-						throw new ParseErrorException($"Invalid directive: {args[0]} @ {FilePath} line {i + 1}");
+						throw new ParseErrorException($"Invalid directive: {args[0]} @ line {i + 1}");
 
 					// stop immediately if it is a stop directive
 					if (directiveType == DirectiveType.STOP)
@@ -149,16 +149,8 @@ namespace VirtualPianoPlayer
 					// if there were waits and now it's notes again, add the notes and waits as actions, and reset wait count
 					if (waits != 0)
 					{
-						// copy the notes so far into the actions
-						if (noteBuilder.Length > 0)
-						{
-							Actions.Add(new MusicLine()
-							{
-								Line = i + 1,
-								Notes = noteBuilder.ToString().ToCharArray()
-							});
-							noteBuilder.Clear();
-						}
+						// copy notes before wait directive
+						copyNotes();
 
 						// copy the wait directive in
 						Actions.Add(new DirectiveLine()
@@ -175,14 +167,58 @@ namespace VirtualPianoPlayer
 					noteBuilder.Append(lines[i][j]);
 				}
 
-				// copy any last notes into actions
-				if (noteBuilder.Length > 0)
+				// copy any notes that weren't iterated through
+				copyNotes();
+
+				void copyNotes()
 				{
-					Actions.Add(new MusicLine()
+					if (noteBuilder.Length > 0)
 					{
-						Line = i + 1,
-						Notes = noteBuilder.ToString().ToCharArray()
-					});
+						string noteString = noteBuilder.ToString();
+						var chars = new List<char[]>();
+
+						// iterate through notes and find pairs
+						int? pairStart = null;
+						for (int j = 0; j < noteString.Length; j++)
+						{
+							if (noteString[j] == '[')
+							{
+								if (pairStart != null)
+									throw new ParseErrorException($"Note pair started inside another note pair @ line {i + 1}");
+
+								pairStart = j + 1;
+								continue;
+							}
+							else if (noteString[j] == ']')
+							{
+								if (pairStart == null)
+									throw new ParseErrorException($"Note pair ended but was not begun @ line {i + 1}");
+
+								// add note pair to notes
+								string notePair = noteString.Substring((int)pairStart, j - (int)pairStart);
+								chars.Add(notePair.ToCharArray());
+
+								pairStart = null;
+								continue;
+							}
+
+							// add notes if they are not inside a pair
+							if (pairStart == null)
+								chars.Add(new char[] { noteString[j] });
+						}
+
+						// check that there are no unclosed note pairs
+						if (pairStart != null)
+							throw new ParseErrorException($"Unclosed note pair (or invalid characters inside note pair) @ line {i + 1}");
+
+						Actions.Add(new MusicLine()
+						{
+							Line = i + 1,
+							Notes = chars.ToArray()
+						});
+
+						noteBuilder.Clear();
+					}
 				}
 			}
 

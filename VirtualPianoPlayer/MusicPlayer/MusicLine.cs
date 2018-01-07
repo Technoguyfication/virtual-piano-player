@@ -8,7 +8,8 @@ namespace VirtualPianoPlayer.MusicPlayer
 {
 	public class MusicLine : Line
 	{
-		public char[] Notes { get; set; }
+		// Two dimensional array of note combinations
+		public char[][] Notes { get; set; }
 
 		/// <summary>
 		/// The line number of the line
@@ -17,7 +18,15 @@ namespace VirtualPianoPlayer.MusicPlayer
 
 		public override string ToString()
 		{
-			return $"{Line.ToString("D3")}: PLAY: {string.Join(string.Empty, Notes)}";
+			string[] combos = new string[Notes.Length];
+
+			// build note string
+			for (int i = 0; i < Notes.Length; i++)
+			{
+				combos[i] = $"[{string.Join(string.Empty, Notes[i])}]";
+			}
+
+			return $"{Line.ToString("D3")}: PLAY: {string.Join(", ", combos)}";
 		}
 	}
 }
