@@ -32,13 +32,15 @@
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.testTextBox = new System.Windows.Forms.TextBox();
+			this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// mainMenuStrip
 			// 
 			this.mainMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.playToolStripMenuItem});
 			this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.mainMenuStrip.Name = "mainMenuStrip";
 			this.mainMenuStrip.Size = new System.Drawing.Size(535, 24);
@@ -72,6 +74,13 @@
 			this.testTextBox.Size = new System.Drawing.Size(511, 250);
 			this.testTextBox.TabIndex = 1;
 			// 
+			// playToolStripMenuItem
+			// 
+			this.playToolStripMenuItem.Name = "playToolStripMenuItem";
+			this.playToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+			this.playToolStripMenuItem.Text = "Play";
+			this.playToolStripMenuItem.Click += new System.EventHandler(this.PlayToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -95,5 +104,6 @@
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
 		private System.Windows.Forms.TextBox testTextBox;
+		private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
 	}
 }

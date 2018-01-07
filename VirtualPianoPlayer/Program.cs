@@ -69,4 +69,16 @@ namespace VirtualPianoPlayer
 		  System.Runtime.Serialization.SerializationInfo info,
 		  System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
 	}
+
+
+	[Serializable]
+	public class RuntimeErrorException : Exception
+	{
+		public RuntimeErrorException() { }
+		public RuntimeErrorException(string message) : base(message) { }
+		public RuntimeErrorException(string message, Exception inner) : base(message, inner) { }
+		protected RuntimeErrorException(
+		  System.Runtime.Serialization.SerializationInfo info,
+		  System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+	}
 }
