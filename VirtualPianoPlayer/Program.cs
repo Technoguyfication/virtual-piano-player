@@ -45,6 +45,18 @@ namespace VirtualPianoPlayer
 		{
 			return data.SubArray(index, data.Length - 1);
 		}
+
+		/// <summary>
+		/// Returns whether the specified object exists inside a given array
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="obj"></param>
+		/// <param name="arr"></param>
+		/// <returns></returns>
+		public static bool In<T>(this T obj, params T[] arr)
+		{
+			return arr.Contains(obj);
+		}
 	}
 
 	[Serializable]

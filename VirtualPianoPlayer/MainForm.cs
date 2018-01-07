@@ -36,7 +36,7 @@ namespace VirtualPianoPlayer
 				return;
 			}
 
-			MessageBox.Show($"Opened {filePath}\nParsed {_currentFile.Actions.Count} total actions, {_currentFile.Variables.Count} variables");
+			MessageBox.Show($"Opened {filePath}\nParsed {_currentFile.Actions.Count} total actions, {_currentFile.Variables.Count} variables, and {_currentFile.Tags.Count} tags");
 
 			// display "compiled" code
 			var builder = new StringBuilder();

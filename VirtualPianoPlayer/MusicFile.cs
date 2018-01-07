@@ -27,7 +27,12 @@ namespace VirtualPianoPlayer
 		/// <summary>
 		/// The variables defined by the script
 		/// </summary>
-		public Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
+		public Dictionary<string, string> Variables { get; private set; } = new Dictionary<string, string>();
+
+		/// <summary>
+		/// Contains an index of the tags in the file
+		/// </summary>
+		public Dictionary<string, int> Tags { get; private set; } = new Dictionary<string, int>();
 
 		public MusicFile(string filePath)
 		{
@@ -41,14 +46,15 @@ namespace VirtualPianoPlayer
 		private void ParseFile()
 		{
 			Actions.Clear();
-			string[] lines = File.ReadAllLines(FilePath);
+			Tags.Clear();
+			Variables.Clear();
+
+			// read all lines from the file
+			string[] lines = File.ReadAllLines(FilePath, Encoding.ASCII);
 
 			// load the script as actions
 			for (int i = 0; i < lines.Length; i++)
 			{
-				// strip all non-ascii characters from input
-				lines[i] = Regex.Replace(lines[i], @"[^\u0020-\u007E]+", string.Empty);
-
 				// test that the lines[i] contains data
 				if (string.IsNullOrEmpty(lines[i]))
 					continue;
@@ -67,7 +73,7 @@ namespace VirtualPianoPlayer
 						if (varStart == null)
 							varStart = j + 1;
 						else
-							throw new ParseErrorException($"Variable use started inside another variable use @ line {i  + 1}: {j}");
+							throw new ParseErrorException($"Variable use started inside another variable use @ line {i + 1}: {j}");
 					}
 					else if (lines[i][j] == '}')
 					{
@@ -99,7 +105,11 @@ namespace VirtualPianoPlayer
 
 					// get directive type
 					if (!Enum.TryParse(args[0].ToUpper(), out DirectiveType directiveType))
-						throw new ParseErrorException($"Invalid directive: args[0] @ {FilePath} line {i + 1}");
+						throw new ParseErrorException($"Invalid directive: {args[0]} @ {FilePath} line {i + 1}");
+
+					// stop immediately if it is a stop directive
+					if (directiveType == DirectiveType.STOP)
+						break;
 
 					// add directive action
 					var line = new DirectiveLine()
@@ -123,12 +133,57 @@ namespace VirtualPianoPlayer
 					continue;
 				}
 
-				// the lines[i] has to be notes, so add them
-				Actions.Add(new MusicLine()
+				// the line has to be music, so parse the waits out of it
+				// iterate through every note / wait character
+				var noteBuilder = new StringBuilder();
+				int waits = 0;
+				for (int j = 0; j < lines[i].Length; j++)
 				{
-					Notes = lines[i].ToCharArray(),
-					Line = i + 1
-				});
+					// increment wait count if there is a wait
+					if (lines[i][j].In(' ', '.'))
+					{
+						waits++;
+						continue;
+					}
+
+					// if there were waits and now it's notes again, add the notes and waits as actions, and reset wait count
+					if (waits != 0)
+					{
+						// copy the notes so far into the actions
+						if (noteBuilder.Length > 0)
+						{
+							Actions.Add(new MusicLine()
+							{
+								Line = i + 1,
+								Notes = noteBuilder.ToString().ToCharArray()
+							});
+							noteBuilder.Clear();
+						}
+
+						// copy the wait directive in
+						Actions.Add(new DirectiveLine()
+						{
+							Type = DirectiveType.WAIT,
+							Arguments = new string[] { waits.ToString() },
+							Line = i + 1
+						});
+
+						waits = 0;
+					}
+
+					// add note to note builder
+					noteBuilder.Append(lines[i][j]);
+				}
+
+				// copy any last notes into actions
+				if (noteBuilder.Length > 0)
+				{
+					Actions.Add(new MusicLine()
+					{
+						Line = i + 1,
+						Notes = noteBuilder.ToString().ToCharArray()
+					});
+				}
 			}
 
 			// remove all set directives since they've been converted to variables by now
@@ -138,7 +193,24 @@ namespace VirtualPianoPlayer
 				return (action.GetType() == typeof(DirectiveLine) && ((DirectiveLine)action).Type == DirectiveType.SET);
 			});
 
-			// TODO: expand GOTOs
+			// index tags
+			for (int i = 0; i < Actions.Count; i++)
+			{
+				// ignore non-directive lines
+				if (Actions[i].GetType() != typeof(DirectiveLine))
+					continue;
+
+				var line = (DirectiveLine)Actions[i];
+
+				// add tag if it is one
+				if (line.Type == DirectiveType.TAG)
+				{
+					if (line.Arguments.Length < 1)
+						throw new ParseErrorException($"Expected tag name @ line {line.Line}");
+
+					Tags.Add(line.Arguments[0], line.Line);
+				}
+			}
 		}
 	}
 }
