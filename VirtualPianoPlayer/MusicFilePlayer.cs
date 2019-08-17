@@ -149,7 +149,10 @@ namespace VirtualPianoPlayer
 
 						// press all keys down
 						foreach (byte c in codes)
+						{
 							keyboard.KeyDown((VirtualKeyCode)c);
+							keyboard.Sleep(2);
+						}
 
 						// wait
 						keyboard.Sleep(KEY_DELAY);
